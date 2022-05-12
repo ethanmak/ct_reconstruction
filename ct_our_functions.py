@@ -31,6 +31,32 @@ def ct_detect_multiple(material_name_list, source, material):
 		plt.show()
 	return residual_energies
 
+# does 'ct_scan' for multiple materials (at one no. of angles) and then at multiple nos. of angles (for one material) and draws them as suggested in the handout. also saves the results to files
+def ct_scan_multiple(material_name_list, scan_angleN_list, index_of_angleN_for_all_materials, index_of_material_for_all_angleNs, source, material):
+
+	phantoms = [ct_phantom(material.name, 256, 3, material_name) for material_name in material_name_list]
+	
+	material_sinograms = []
+	for (material_name, phantom) in zip(material_name_list, phantoms):
+		material_sinogram = ct_scan(source.photon('100kVp, 2mm Al'), material, phantom, 0.1, scan_angleN_list[index_of_angleN_for_all_materials])
+		material_sinograms.append(material_sinogram)
+		np.savetxt("sinogram_" + material_name + "_" + str(scan_angleN_list[index_of_angleN_for_all_materials]) + ".txt", material_sinogram)
+	
+	angleN_sinograms = []
+	for angleN in scan_angleN_list:
+		angleN_sinogram = ct_scan(source.photon('100kVp, 2mm Al'), material, phantoms[index_of_material_for_all_angleNs], 0.1, angleN)
+		angleN_sinograms.append(angleN_sinogram)
+		np.savetxt("sinogram_" + material_name_list[index_of_material_for_all_angleNs] + "_" + str(angleN) + ".txt", angleN_sinogram)
+	
+	for material_sinogram in material_sinograms:
+		draw(material_sinogram)
+	
+	for angleN_sinogram in angleN_sinograms:
+		draw(angleN_sinogram)
+	
+	return (material_sinograms, angleN_sinograms)
+
 
 class EdmundsConstants:
 	material_name_list = ['Air', 'Soft Tissue', 'Water', 'Bone', 'Titanium']
+	scan_angleN_list = [32, 64, 128, 256, 512]
