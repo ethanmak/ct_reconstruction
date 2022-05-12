@@ -23,6 +23,8 @@ from scan_and_reconstruct import *
 from create_dicom import *
 from xtreme import *
 
+from ct_our_functions import *
+
 #######create object instances#######
 material = Material()
 source = Source()
