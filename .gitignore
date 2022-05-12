@@ -220,3 +220,5 @@ results/
 # Ignore VSCode setup
 .vscode
 
+# Ignore pesonal test scripts
+ethan_test.py
