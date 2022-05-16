@@ -2,10 +2,10 @@ import numpy as np
 from attenuate import attenuate
 
 
-def ct_detect(p, coeffs, depth, mas=10000):
+def ct_detect(photons, coeffs, depth, mas=10000):
 
     """ct_detect returns detector photons for given material depths.
-    y = ct_detect(p, coeffs, depth, mas) takes a source energy
+    y = ct_detect(photons, coeffs, depth, mas) takes a source energy
     distribution photons (energies), a set of material linear attenuation
     coefficients coeffs (materials, energies), and a set of material depths
     in depth (materials, samples) and returns the detections at each sample
@@ -14,12 +14,12 @@ def ct_detect(p, coeffs, depth, mas=10000):
     mas defines the current-time-product which affects the noise distribution
     for the linear attenuation"""
 
-    # check p for number of energies
-    if type(p) != np.ndarray:
-        p = np.array([p])
-    if p.ndim > 1:
-        raise ValueError("input p has more than one dimension")
-    energies = len(p)
+    # check photons for number of energies
+    if type(photons) != np.ndarray:
+        photons = np.array([photons])
+    if photons.ndim > 1:
+        raise ValueError("input photons has more than one dimension")
+    energies = len(photons)
 
     # check coeffs is of (materials, energies)
     if type(coeffs) != np.ndarray:
@@ -29,7 +29,7 @@ def ct_detect(p, coeffs, depth, mas=10000):
     elif coeffs.ndim != 2:
         raise ValueError("input coeffs has more than two dimensions")
     if coeffs.shape[1] != energies:
-        raise ValueError("input coeffs has different number of energies to input p")
+        raise ValueError("input coeffs has different number of energies to input photons")
     materials = coeffs.shape[0]
 
     # check depth is of (materials, samples)
@@ -51,7 +51,7 @@ def ct_detect(p, coeffs, depth, mas=10000):
     # extend source photon array so it covers all samples
     detector_photons = np.zeros([energies, samples])
     for e in range(energies):
-        detector_photons[e] = p[e]
+        detector_photons[e] = photons[e] # assigning to an array from a scalar assigns the same scalar to each of the elements of the array. this duplicates the photon number at each energy across multiple samples
 
     # calculate array of residual mev x samples for each material in turn
     for m in range(materials):
