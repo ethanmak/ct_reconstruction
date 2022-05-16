@@ -18,8 +18,22 @@ def test_ct_calibrate(material, source):
 	
 	result = ct_calibrate(photons, material, sinogram, scale)
 	
-	print(result)
+	min_result = min([min(row) for row in result])
+	max_result = max([max(row) for row in result])
+	
+	if min_result > 1e-1:
+		print("Warning: calibrated sinogram has no values vlose to zero.")
+	
+	if min_result < -1.0e-4:
+		print("Error: calibrated sinogram has negative attenuation coefficient values.")
+	
+	if max_result > 1e2:
+		print("Warning: calibrated sinogram has attenuation coefficient values exceeding 100.")
 
 
 def run_tests(material, source):
+	print("Testing 'ct_calibrate' >>>")
 	test_ct_calibrate(material, source)
+	print("Done with 'ct_calibrate'.")
+	
+	
