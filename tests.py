@@ -7,10 +7,6 @@ from ct_lib import *
 from scan_and_reconstruct import *
 from create_dicom import *
 
-# create object instances
-material = Material()
-source = Source()
-
 def test_ct_calibrate():
 	# tests 'ct_calibrate'
 	# this test relies on correct functionality of the 'source' and 'material' classes and the 'ct_phantom' and 'ct_scan' functions
@@ -24,4 +20,6 @@ def test_ct_calibrate():
 	
 	print(result)
 
-test_ct_calibrate()
+
+def run_tests():
+	test_ct_calibrate()
