@@ -31,7 +31,7 @@ def ramp_filter(sinogram, scale, alpha=0.001):
         sin_line_ft = np.fft.fftshift(np.fft.fft(sinogram[i],m))
         filt_ft = filter*sin_line_ft
         filt_ft = np.fft.ifftshift(filt_ft)
-        sinogram[i] = np.fft.ifft(filt_ft)[0:n]
+        sinogram[i] = np.real(np.fft.ifft(filt_ft)[0:n])
 
 
     return sinogram
