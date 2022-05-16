@@ -24,13 +24,13 @@ def ramp_filter(sinogram, scale, alpha=0.001):
     print("Ramp filtering")
     #define filter
     omega_max = 2*np.pi/scale
-    freq = np.fft.fftfreq(n,scale)
-    filter = np.abs(freq)
+    freq = np.linspace(-omega_max,omega_max,n)
+    filter = np.abs(freq)/(2*np.pi)*np.cos(freq/omega_max*np.pi/2)**alpha
     for i in range(angles):
         #take fft for value
         sin_line_ft = np.fft.fft(sinogram[i])
         filt_ft = filter*sin_line_ft
-        sinogram[i] = np.fft.ifft(filt_ft,n)
+        sinogram[i] = np.real(np.fft.ifft(filt_ft,n))
 
 
     return sinogram
