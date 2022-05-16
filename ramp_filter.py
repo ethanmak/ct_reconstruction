@@ -28,10 +28,10 @@ def ramp_filter(sinogram, scale, alpha=0.001):
     filter = np.abs(freq)/(2*np.pi)*np.cos(freq/omega_max*np.pi/2)**alpha
     for i in range(angles):
         #take fft for value
-        sin_line_ft = np.fft.fftshift(np.fft.fft(sinogram[i],m))
+        sin_line_ft = np.fft.fftshift(np.fft.fft(sinogram[i],m,norm="backward"))
         filt_ft = filter*sin_line_ft
         filt_ft = np.fft.ifftshift(filt_ft)
-        sinogram[i] = np.real(np.fft.ifft(filt_ft)[0:n])
+        sinogram[i] = np.real(np.fft.ifft(filt_ft,norm = "backward")[0:n])
 
 
 
