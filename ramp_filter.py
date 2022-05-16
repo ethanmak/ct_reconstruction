@@ -22,5 +22,15 @@ def ramp_filter(sinogram, scale, alpha=0.001):
 
     # apply filter to all angles
     print("Ramp filtering")
+    #define filter
+    omega_max = 2*np.pi/scale
+    freq = np.fft.fftfreq(n,scale)
+    filter = np.abs(freq)
+    for i in range(angles):
+        #take fft for value
+        sin_line_ft = np.fft.fft(sinogram[i])
+        filt_ft = filter*sin_line_ft
+        sinogram[i] = np.fft.ifft(filt_ft,n)
+
 
     return sinogram
