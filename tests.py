@@ -61,3 +61,25 @@ def test_scan_and_reconstruct(material,source):
 	ax[1].set_title("Reconstructed Image")
 	plt.savefig("saved_results/test_scan_and_reconstruct.png")
 	plt.show()
+
+def test_scan_and_reconstruct_hounsfield(material, source):
+	phantom = ct_phantom(material.name, 256, 3, 'Titanium')
+	s = fake_source([0.08], 0.1, method="ideal")
+	scan = scan_and_reconstruct(s, material, phantom, 0.1, angles=256)
+
+	max_hounsfield = np.max(scan) # this will be found at the titanium implant where the attenuation is highest
+
+	f = open("results/scan_and_reconstruct_hounsfield.txt", mode="w")
+	f.write("Max value of reconstructed image is: {}".format(max_hounsfield))
+	f.close()
+
+	assert np.abs(max_hounsfield - 9000) < 100
+
+def test_attenuate(material, source):
+	energies = np.array([[1., 1.], [1., 1.]])
+	coeff = np.array([1, 2])
+	depths = np.array([3, 5])
+
+	output = np.array([[np.exp(-3), np.exp(-5)], [np.exp(-6), np.exp(-10)]])
+
+	assert (attenuate(energies, coeff, depths) == output).all()
