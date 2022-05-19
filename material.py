@@ -61,4 +61,4 @@ class Material(object):
 
         # return the appropriate coeff
         index = self.name.index(input)
-        return self.coeffs[index]
+        return self.coeffs[index].copy()
