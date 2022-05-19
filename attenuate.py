@@ -44,6 +44,9 @@ def attenuate(original_energy, coeff, depth):
 		)
 
 	# Work out residual energy for each depth and at each energy
+	# The attenuation follows a decaying exponential curve when plotted against depth,
+	# so here we multiply the coefficient and depth before exponentiating it to get the real
+	# photons detected
 	original_energy *= np.exp(-np.outer(coeff, depth))
 
 	return original_energy
