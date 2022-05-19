@@ -90,14 +90,14 @@ def test_scan_and_reconstruct_orientation_scale(material, source):
 	
 	conditions:
 		- titanium disc and sphere phantom
-		- ideal pure ?? kV source
+		- ideal pure 56 kV peak source
 	
 	:param material: Material instance
 	:param source: Source instance
 	:return: None
 	'''
 	phantom = ct_phantom(material.name, 256, 6, 'Titanium')
-	s = fake_source(source.mev, 0.1, method="ideal")
+	s = fake_source(source.mev, 0.08, method="ideal")
 	scan = scan_and_reconstruct(s, material, phantom, 0.1, angles=256, hounsfield=False)
 
 	grey_scan = normalize_to_greyscale(scan)
@@ -142,7 +142,7 @@ def test_scan_and_reconstruct_attenuation_coefficient(material, source):
 	
 	conditions:
 		- circle of water phantom
-		- ideal pure ?? kV peak source
+		- ideal pure 56 kV peak source
 	
 	:param material: Material instance
 	:param source: Source instance
