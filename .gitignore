@@ -214,9 +214,6 @@ cython_debug/
 # Jetbrains configuration files
 .idea/
 
-# Ignore results
-results/
-
 # Ignore VSCode setup
 .vscode
 
