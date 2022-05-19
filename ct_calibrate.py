@@ -16,7 +16,7 @@ def ct_calibrate(photons, material, sinogram, scale):
 	# Get dimensions and work out detection for just air of twice the side length (has to be the same as in ct_scan.py)
 	number_detectors = sinogram.shape[1]
 	
-	air_residual = ct_detect(photons, material.coeff('Air'), 2*number_detectors*scale) # taking the residual intensity through air at a single depth of double the side length
+	air_residual = ct_detect(photons, material.coeff('Air'), 2 * number_detectors * scale) # taking the residual intensity through air at a single depth of double the side length
 	
 	# performing calibration relative to residual energy through just air
 	sinogram = np.log(air_residual / sinogram)
