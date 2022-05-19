@@ -21,9 +21,13 @@ def run_tests(material, source):
 
 
 def test_ct_calibrate(material, source):
-	# tests 'ct_calibrate'
-	# this test relies on correct functionality of the 'source' and 'material' classes and the 'ct_phantom' and 'ct_scan' functions
-	
+	'''
+	tests 'ct_calibrate'
+	this test relies on correct functionality of the 'source' and 'material' classes and the 'ct_phantom' and 'ct_scan' functions
+	conditions:
+		- single large hip titanium replacement phantom
+		- non-ideal 80 kV peak source hardened with 2mm Aluminium
+	'''
 	# parameters
 	photons = source.photon('80kVp, 2mm Al')
 	scale = 0.1
@@ -50,10 +54,14 @@ def test_scan_and_reconstruct_shape(material,source):
 	The main goal of this function is to ensure that the phantom and reconstructed images have similar
 	features in shape, although the brightness will differ based on the materials of the phantom.
 	The plots are drawn and saved side by side to ensure easy comparison
+	
+	conditions:
+		- single large titanium hip replacement phantom
+		- non-ideal 80 kV peak source hardened with 2mm Aluminium
 
-	:param material:
-	:param source:
-	:return:
+	:param material: Material instance
+	:param source: Source instance
+	:return: None
 	'''
 	fig, ax = plt.subplots(1,2)
 
@@ -79,7 +87,11 @@ def test_scan_and_reconstruct_orientation_scale(material, source):
 	This test is done by comparing a normalized function of the output with the phantom
 	and subtracting each from each other. In the differed image, the titanium implant should
 	appear black and centered. Any deviation demonstrates a difference in scale or orientation.
-
+	
+	conditions:
+		- titanium disc and sphere phantom
+		- ideal pure ?? kV source
+	
 	:param material: Material instance
 	:param source: Source instance
 	:return: None
@@ -127,7 +139,11 @@ def test_scan_and_reconstruct_attenuation_coefficient(material, source):
 	This is done by creating a phantom with a titanium implant and using an ideal source
 	to scan the phantom, yielding a max attenuation coefficient for the water which can be
 	compared to the tabled coefficient. We accept the value if it is within 5%
-
+	
+	conditions:
+		- circle of water phantom
+		- ideal pure ?? kV peak source
+	
 	:param material: Material instance
 	:param source: Source instance
 	:return: None
