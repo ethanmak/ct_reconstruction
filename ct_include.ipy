@@ -22,6 +22,7 @@ from back_project import *
 from scan_and_reconstruct import *
 from create_dicom import *
 from xtreme import *
+from tests import *
 
 from ct_our_functions import *
 from tests import *
