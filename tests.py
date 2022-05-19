@@ -73,6 +73,17 @@ def test_scan_and_reconstruct_shape(material,source):
 	plt.savefig("results/test_scan_and_reconstruct_shape.png")
 
 def test_scan_and_reconstruct_orientation_scale(material, source):
+	'''
+	Tests the orientation and scale of the reconstruction output.
+
+	This test is done by comparing a normalized function of the output with the phantom
+	and subtracting each from each other. In the differed image, the titanium implant should
+	appear black and centered. Any deviation demonstrates a difference in scale or orientation.
+
+	:param material: Material instance
+	:param source: Source instance
+	:return: None
+	'''
 	phantom = ct_phantom(material.name, 256, 6, 'Titanium')
 	s = fake_source(source.mev, 0.1, method="ideal")
 	scan = scan_and_reconstruct(s, material, phantom, 0.1, angles=256, hounsfield=False)
@@ -82,17 +93,18 @@ def test_scan_and_reconstruct_orientation_scale(material, source):
 
 	diff = normalize_to_greyscale(np.clip(grey_phantom - grey_scan, a_min=0, a_max=None))
 
-	fig, ax = plt.subplots(1, 3)
+	fig, ax = plt.subplots(2, 2)
 
-	ax[0].imshow(phantom, cmap="Greys_r")
-	ax[0].set_aspect("equal", "box")
-	ax[0].set_title("Original Phantom")
-	ax[1].imshow(scan, cmap="Greys_r")
-	ax[1].set_aspect("equal", "box")
-	ax[1].set_title("Reconstructed Image")
-	ax[2].imshow(diff, cmap="Greys_r")
-	ax[2].set_aspect("equal", "box")
-	ax[2].set_title("Difference between Normalized Phantom and Reconstructed")
+	ax[0, 0].imshow(phantom, cmap="Greys_r")
+	ax[0, 0].set_aspect("equal", "box")
+	ax[0, 0].set_title("Original Phantom")
+	ax[0, 1].imshow(scan, cmap="Greys_r")
+	ax[0, 1].set_aspect("equal", "box")
+	ax[0, 1].set_title("Reconstructed Image")
+	ax[1, 0].imshow(diff, cmap="Greys_r")
+	ax[1, 0].set_aspect("equal", "box")
+	ax[1, 0].set_title("Difference")
+	fig.set_size_inches(16, 16)
 	plt.savefig("results/test_scan_and_reconstruct_orientation_scale.png")
 
 
