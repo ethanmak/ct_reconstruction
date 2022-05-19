@@ -59,7 +59,7 @@ def test_scan_and_reconstruct(material,source):
 	ax[1].imshow(scan, cmap = "Greys_r")
 	ax[1].set_aspect("equal","box")
 	ax[1].set_title("Reconstructed Image")
-	plt.savefig("saved_results/test_scan_and_reconstruct.png")
+	plt.savefig("results/test_scan_and_reconstruct.png")
 	plt.show()
 
 def test_scan_and_reconstruct_hounsfield(material, source):
