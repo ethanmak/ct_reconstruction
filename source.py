@@ -61,4 +61,4 @@ class Source(object):
 
         # return the appropriate coeff
         index = self.name.index(input)
-        return self.photons[index]
+        return self.photons[index].copy()
