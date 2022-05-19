@@ -219,3 +219,6 @@ cython_debug/
 
 # Ignore pesonal test scripts
 ethan_test.py
+
+# Ignore lock files
+*~lock*
