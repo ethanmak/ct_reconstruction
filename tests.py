@@ -6,6 +6,7 @@ from ct_phantom import *
 from ct_lib import *
 from scan_and_reconstruct import *
 from create_dicom import *
+from ct_our_functions import *
 import matplotlib.pyplot as plt
 import inspect
 
@@ -70,6 +71,30 @@ def test_scan_and_reconstruct_shape(material,source):
 	ax[1].set_aspect("equal", "box")
 	ax[1].set_title("Reconstructed Image")
 	plt.savefig("results/test_scan_and_reconstruct_shape.png")
+
+def test_scan_and_reconstruct_orientation_scale(material, source):
+	phantom = ct_phantom(material.name, 256, 6, 'Titanium')
+	s = fake_source(source.mev, 0.1, method="ideal")
+	scan = scan_and_reconstruct(s, material, phantom, 0.1, angles=256, hounsfield=False)
+
+	grey_scan = normalize_to_greyscale(scan)
+	grey_phantom = normalize_to_greyscale(phantom)
+
+	diff = normalize_to_greyscale(np.clip(grey_phantom - grey_scan, a_min=0, a_max=None))
+
+	fig, ax = plt.subplots(1, 3)
+
+	ax[0].imshow(phantom, cmap="Greys_r")
+	ax[0].set_aspect("equal", "box")
+	ax[0].set_title("Original Phantom")
+	ax[1].imshow(scan, cmap="Greys_r")
+	ax[1].set_aspect("equal", "box")
+	ax[1].set_title("Reconstructed Image")
+	ax[2].imshow(diff, cmap="Greys_r")
+	ax[2].set_aspect("equal", "box")
+	ax[2].set_title("Difference between Normalized Phantom and Reconstructed")
+	plt.savefig("results/test_scan_and_reconstruct_orientation_scale.png")
+
 
 def skip_test_scan_and_reconstruct_hounsfield(material, source):
 	phantom = ct_phantom(material.name, 256, 3, 'Titanium')

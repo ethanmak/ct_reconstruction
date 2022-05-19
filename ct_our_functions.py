@@ -60,3 +60,6 @@ def ct_scan_multiple(material_name_list, scan_angleN_list, index_of_angleN_for_a
 class EdmundsConstants:
 	material_name_list = ['Air', 'Soft Tissue', 'Water', 'Bone', 'Titanium']
 	scan_angleN_list = [32, 64, 128, 256, 512]
+
+def normalize_to_greyscale(X):
+	return (X - np.min(X)) / (np.max(X) - np.min(X))
