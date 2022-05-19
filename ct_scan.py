@@ -20,6 +20,9 @@ def ct_scan(photons, material, phantom, scale, angles, mas=10000):
     # find the coefficients for air
     air = material.name.index("Air")
 
+    # get actual number of photons from source
+    photons *= mas * (scale ** 2)
+
     # get input image dimensions, and create a coordinate structure
     n = max(phantom.shape)
     xi, yi = np.meshgrid(np.arange(n) - (n / 2) + 0.5, np.arange(n) - (n / 2) + 0.5)
