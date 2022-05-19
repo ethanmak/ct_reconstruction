@@ -19,6 +19,7 @@ def scan_and_reconstruct(
 	alpha for filtering. The output reconstruction is the same size as phantom."""
 
 	# convert source (photons per (mas, cm^2)) to photons
+	# /\ this is done in 'ct_scan'
 
 	# create sinogram from phantom data, with received detector values
 	sinogram = ct_scan(photons, material, phantom, scale, angles, mas)
@@ -35,7 +36,6 @@ def scan_and_reconstruct(
 	# convert to Hounsfield Units
 	mu_water = material.coeff("Water")[keVp - 1] # the coeffs array gives attenuation coefficients in intervals of 0.001 MeV or 1.0 keV, starting from 0.001 [MeV]. So, the value at index 'keVp' is the the attenuation coefficient of the material for photons of energy $keVp [keVp].
 	mu_air = material.coeff("Air")[keVp - 1]
-	
 	back_proj = 1000.0*(back_proj - mu_water)/(mu_water - mu_air)
 	
 	return back_proj
