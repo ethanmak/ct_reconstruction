@@ -1,0 +1,2 @@
+Water attenuation coefficent of reconstructed image is: 0.21306830910653932 
+Expected water attenuation coefficent of reconstructed image is: 0.213607802500335 
