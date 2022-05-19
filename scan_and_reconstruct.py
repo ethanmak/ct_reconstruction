@@ -22,7 +22,7 @@ def scan_and_reconstruct(
 	# /\ this is done in 'ct_scan'
 
 	# create sinogram from phantom data, with received detector values
-	sinogram = ct_scan(photons, material, phantom, scale, angles, mas)
+	sinogram = ct_scan_improved(photons, material, phantom, scale, angles, mas)
 	
 	# convert detector values into calibrated attenuation against values taken from scan of just air
 	cal_sinogram = ct_calibrate(photons, material, sinogram, scale)

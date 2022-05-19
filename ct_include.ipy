@@ -2,7 +2,7 @@
 #use this command in ipython terminal to setup lab
 # `%run ct_include.ipy`
 
-#######import files - add new python imports here#######
+####### import files - add new python imports here #######
 import matplotlib.pyplot as plt
 import numpy.matlib
 import numpy as np
@@ -25,13 +25,10 @@ from xtreme import *
 from tests import *
 from ct_our_functions import *
 
-from ct_our_functions import *
-from tests import *
-
-#######create object instances#######
+####### create object instances #######
 material = Material()
 source = Source()
 
-#######reload all modules every time before executing the typed python code#######
+####### reload all modules every time before executing the typed python code #######
 %load_ext autoreload
 %autoreload 2
