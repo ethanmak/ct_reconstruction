@@ -13,11 +13,10 @@ def ct_calibrate(photons, material, sinogram, scale):
     material structure containing names, linear attenuation coefficients and
     energies in mev, and scale is the size of each pixel in x, in cm."""
 
-    # Get dimensions and work out detection for just air of twice the side
-    # length (has to be the same as in ct_scan.py)
+    # Get dimensions and work out detection for just air of twice the side length (has to be the same as in ct_scan.py)
     n = sinogram.shape[1]
 
-    air_energy = ct_detect(photons, material.coeff('Air'), 2*n*scale)[0]
+    air_energy = ct_detect(photons, material.coeff('Air'), 2*n*scale) # taking the residual intensity through air at a single depth of double the side length
 
     # perform calibration
 

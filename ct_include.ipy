@@ -24,6 +24,7 @@ from create_dicom import *
 from xtreme import *
 
 from ct_our_functions import *
+from tests import *
 
 #######create object instances#######
 material = Material()
