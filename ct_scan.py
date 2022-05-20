@@ -100,7 +100,8 @@ def ct_scan_improved(photons, material, phantom, scale, angles, mas=10000):
 	photons *= mas*scale*scale
 
 	# get input image dimensions, and create a coordinate structure
-	n = max(phantom.shape)
+	(phantom_height, phantom_width) = phantom.shape
+	n = max(phantom_height, phantom_width)
 	halfN = n / 2
 	dim = np.arange(n) - halfN + 0.5
 	xi, yi = np.meshgrid(dim, dim)
@@ -118,7 +119,7 @@ def ct_scan_improved(photons, material, phantom, scale, angles, mas=10000):
 			materials_found.append(element)
 	materialsN = len(materials_found)
 	materials = np.zeros(materialsN, dtype=np.int)
-	material_phantom = np.zeros((materialsN, angles, angles))
+	material_phantom = np.zeros((materialsN, phantom_height, phantom_width))
 	n_sofar = 0
 	for m in range(coeffsN):
 		if m == air:
