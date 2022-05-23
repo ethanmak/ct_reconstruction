@@ -32,5 +32,9 @@ def scan_and_reconstruct(
 	
 	# back-projects to undo Radon transform and retrieve original phantom based on attenuation coefficients
 	back_proj = back_project(filt_sinogram)
+
+	# convert to housefield units
+
+	back_proj_hu = hu(photons,material,back_proj,scale,sinogram.shape[1])
 	
-	return back_proj
+	return back_proj_hu
