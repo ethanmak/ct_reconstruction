@@ -2,9 +2,9 @@ import numpy as np
 from attenuate import *
 from ct_calibrate import *
 
-def hu(photons, material, reconstruction, n_detectors, scale):
+def hu(photons, material, reconstruction, scale, n_detectors):
 	"""convert CT reconstruction output to Hounsfield Units
-	calibrated = hu(photons, material, reconstruction, n_detectors, scale) converts the reconstruction into Hounsfield
+	calibrated = hu(photons, material, reconstruction, scale, n_detectors) converts the reconstruction into Hounsfield
 	Units, using the material coefficients, photon energy photons and scale given."""
 	
 	# n_detectors is taken as an arguments to calculate the depth through which to calibrate the normalised water and air attenuation coefficients. For a ct_detect function that does not compensate for beam hardening, this value does not affect the result.
