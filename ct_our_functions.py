@@ -63,3 +63,11 @@ class EdmundsConstants:
 
 def normalize_to_greyscale(X):
 	return (X - np.min(X)) / (np.max(X) - np.min(X))
+
+def normalise_to_highlight(x, mat_name):
+	material_name_list = ['Soft tissue', 'Bone']
+	normalisation_value_list = [(0, 200), (1000, 300)]
+	
+	(c, w) = normalisation_value_list[material_name_list.index(mat_name)]
+	
+	return np.clip(128.0*(x - c)/w + 128.0, 0, 255)
