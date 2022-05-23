@@ -152,7 +152,7 @@ def test_scan_and_reconstruct_attenuation_coefficient(material, source):
 	s = fake_source(source.mev, 0.08, method="ideal")
 	scan = scan_and_reconstruct(s, material, phantom, 0.1, angles=256, hounsfield=False)
 
-	coeff = np.mean(scan[120:130, 120:130])  # this will be found at the titanium implant where the attenuation is highest
+	coeff = np.mean(scan[64:192, 64:192])  # sampling at the centre of the phantom
 	expected = material.coeff('Water')[np.argmax(s)]
 
 	f = open("results/scan_and_reconstruct_attenuation_coefficient.txt", mode="w")
