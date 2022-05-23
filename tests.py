@@ -106,7 +106,8 @@ def test_scan_and_reconstruct_orientation_scale(material, source):
 	diff = normalize_to_greyscale(np.clip(grey_phantom - grey_scan, a_min=0, a_max=None))
 
 	fig, ax = plt.subplots(2, 2)
-
+    
+	ax[1,1].axis("off")
 	ax[0, 0].imshow(phantom, cmap="Greys_r")
 	ax[0, 0].set_aspect("equal", "box")
 	ax[0, 0].set_title("Original Phantom")
