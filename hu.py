@@ -11,9 +11,8 @@ def hu(photons, material, reconstruction, scale, n_detectors):
 	
 	# use water to calibrate, using the same calibration process as the normal CT data
 	size = 2.0*n_detectors*scale # size only matters if ct_detect attempts to compensate for beam hardening
-	water_residual = ct_detect(photons, material.coeff('Water'), size) # taking the residual intensity through water at a single depth of double the side length
-	air_residual = ct_detect(photons, material.coeff('Air'), size) # taking the residual intensity through air at a single depth of double the side length
-	mu_water = np.log(air_residual / water_residual) / size # performing calibration relative to residual energy through just air
+	water_residual = ct_detect(photons, material.coeff('Water'), size, False) # taking the residual intensity through water at a single depth of double the side length
+	mu_water = ct_calibrate(photons, material, water_residual, scale, n_detectors) / size # performing calibration relative to residual energy through just air
 	# according to the above calibration, mu_air is 0
 	
 	# using result to convert to hounsfield units
