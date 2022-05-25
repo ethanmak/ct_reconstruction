@@ -222,3 +222,6 @@ ethan_test.py
 
 # Ignore lock files
 *~lock*
+
+# Ignores self-made figures
+figures/
