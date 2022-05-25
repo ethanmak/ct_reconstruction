@@ -11,7 +11,7 @@ _scattering_variance_scaling = 2e9
 _transmission_noise_scaling = 2e4
 
 
-def ct_detect(photons, coeffs, depth, mas=10000):
+def ct_detect(photons, coeffs, depth, mas=10000, noise=True):
 
     """ct_detect returns detector photons for given material depths.
     y = ct_detect(photons, coeffs, depth, mas) takes a source energy
@@ -62,7 +62,6 @@ def ct_detect(photons, coeffs, depth, mas=10000):
 
     for e in range(energies):
         mean = photons[e]
-        #source poisson noise
         detector_photons[e] = mean # np.random.poisson(mean)
 
     source_photons = np.sum(detector_photons, axis=0)
@@ -76,13 +75,14 @@ def ct_detect(photons, coeffs, depth, mas=10000):
 
     # model noise
     # transmission noise modeled by approximate normal distribution
-    detector_photons = np.random.poisson(detector_photons / _transmission_noise_scaling,
-                                        detector_photons.shape).astype(np.float) * _transmission_noise_scaling
-    background_noise = np.random.poisson(_background_noise_mean * mas,
-                                        detector_photons.shape).astype(np.float)
-    scattering_noise = _scattering_noise_scaling * _scattering_variance_scaling * np.random.poisson(source_photons / _scattering_variance_scaling,
-                                                                    source_photons.shape).astype(np.float)
-    detector_photons += scattering_noise + background_noise
+    if noise:
+        detector_photons = np.random.poisson(detector_photons / _transmission_noise_scaling,
+                                            detector_photons.shape).astype(np.float) * _transmission_noise_scaling
+        background_noise = np.random.poisson(_background_noise_mean * mas,
+                                            detector_photons.shape).astype(np.float)
+        scattering_noise = _scattering_noise_scaling * _scattering_variance_scaling * np.random.poisson(source_photons / _scattering_variance_scaling,
+                                                                        source_photons.shape).astype(np.float)
+        detector_photons += scattering_noise + background_noise
 
 
     # minimum detection is one photon
