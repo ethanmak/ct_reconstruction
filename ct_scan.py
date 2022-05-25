@@ -6,7 +6,7 @@ import math
 import sys
 
 
-def ct_scan(photons, material, phantom, scale, angles, mas=10000):
+def ct_scan(photons, material, phantom, scale, angles, mas=10000, noise=True):
 
     """simulate CT scanning of an object
     scan = ct_scan(photons, material, phantom, scale, angles, mas) takes a phantom
@@ -74,13 +74,13 @@ def ct_scan(photons, material, phantom, scale, angles, mas=10000):
         # materials
         depth *= scale
 
-        scan[angle] = ct_detect(photons, material.coeffs, depth, mas)
+        scan[angle] = ct_detect(photons, material.coeffs, depth, mas, noise=noise)
 
     sys.stdout.write("\n")
 
     return scan
 
-def ct_scan_improved(photons, material, phantom, scale, angles, mas=10000):
+def ct_scan_improved(photons, material, phantom, scale, angles, mas=10000, noise=True):
 
 	"""simulate CT scanning of an object
 	scan = ct_scan(photons, material, phantom, scale, angles, mas) takes a phantom
@@ -167,7 +167,7 @@ def ct_scan_improved(photons, material, phantom, scale, angles, mas=10000):
 		# materials
 		depth *= scale
 
-		scan[angle] = ct_detect(photons, material.coeffs, depth, mas)
+		scan[angle] = ct_detect(photons, material.coeffs, depth, mas, noise=noise)
 
 	sys.stdout.write("\n")
 

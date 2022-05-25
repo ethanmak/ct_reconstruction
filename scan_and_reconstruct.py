@@ -8,7 +8,7 @@ from hu import *
 
 
 def scan_and_reconstruct(
-	photons, material, phantom, scale, angles, mas=10000, alpha=0.001
+	photons, material, phantom, scale, angles, mas=10000, alpha=0.001, noise=True
 ):
 
 	"""Simulation of the CT scanning process
@@ -22,10 +22,10 @@ def scan_and_reconstruct(
 	# /\ this is done in 'ct_scan'
 
 	# create sinogram from phantom data, with received detector values
-	sinogram = ct_scan_improved(photons, material, phantom, scale, angles, mas)
+	sinogram = ct_scan_improved(photons, material, phantom, scale, angles, mas, noise=noise)
 	
 	# convert detector values into calibrated attenuation against values taken from scan of just air
-	cal_sinogram = ct_calibrate(photons, material, sinogram, scale)
+	cal_sinogram = ct_calibrate(photons, material, sinogram, scale, noise=noise)
 	
 	# filters sinogram by Ram Lak filter to remove unwanted high frequency noise and isolate frequencies of interest
 	filt_sinogram = ramp_filter(cal_sinogram, scale, alpha)

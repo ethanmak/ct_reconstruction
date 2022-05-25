@@ -4,7 +4,7 @@ import scipy
 from scipy import interpolate
 
 
-def ct_calibrate(photons, material, sinogram, scale, number_detectors=None):
+def ct_calibrate(photons, material, sinogram, scale, number_detectors=None, noise=True):
 
     """ct_calibrate convert CT detections to linearised attenuation
     sinogram = ct_calibrate(photons, material, sinogram, scale) takes the CT detection sinogram
@@ -18,7 +18,7 @@ def ct_calibrate(photons, material, sinogram, scale, number_detectors=None):
         number_detectors = sinogram.shape[1]
 
     air_residual = ct_detect(
-        photons, material.coeff("Air"), 2 * number_detectors * scale
+        photons, material.coeff("Air"), 2 * number_detectors * scale, noise=noise
     )  # taking the residual intensity through air at a single depth of double the side length
 
     # performing calibration relative to residual energy through just air
