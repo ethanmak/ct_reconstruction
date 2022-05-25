@@ -6,9 +6,9 @@ from attenuate import attenuate
 # Since 1 uSv/hr = 0.0057 CPM
 
 _background_noise_mean = 0.9
-_scattering_noise_scaling = 1e-2
-_scattering_variance_scaling = 2e9
-_transmission_noise_scaling = 2e4
+_scattering_noise_scaling = 1e-3
+_scattering_variance_scaling = 1e9
+_transmission_noise_scaling = 1e3 # 2e4
 
 
 def ct_detect(photons, coeffs, depth, mas=10000, noise=True):

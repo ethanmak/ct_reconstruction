@@ -29,7 +29,7 @@ def ct_calibrate(photons, material, sinogram, scale, number_detectors=None, nois
     # have an array of thicknesses to scan water at 256 or number of detectors, whichever is larger
     t_w = scale * np.arange(np.max([number_detectors, 256]))
     p_w = np.log(
-        air_residual / ct_detect(photons, material.coeff("Water"), t_w)
+        air_residual / ct_detect(photons, material.coeff("Water"), t_w, noise=noise)
     )
 
     # fit as described in the handout
