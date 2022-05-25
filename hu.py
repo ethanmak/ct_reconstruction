@@ -10,8 +10,8 @@ def hu(photons, material, reconstruction, scale, n_detectors):
 	# n_detectors is taken as an arguments to calculate the depth through which to calibrate the normalised water and air attenuation coefficients. For a ct_detect function that does not compensate for beam hardening, this value does not affect the result.
 	
 	# use water to calibrate, using the same calibration process as the normal CT data
-	size = 2.0*n_detectors*scale # size only matters if ct_detect attempts to compensate for beam hardening
-	water_residual = ct_detect(photons, material.coeff('Water'), size, False) # taking the residual intensity through water at a single depth of double the side length
+	size = 2.0 * n_detectors * scale  # size only matters if ct_detect attempts to compensate for beam hardening
+	water_residual = ct_detect(photons, material.coeff('Water'), size) # taking the residual intensity through water at a single depth of double the side length
 	mu_water = ct_calibrate(photons, material, water_residual, scale, n_detectors) / size # performing calibration relative to residual energy through just air
 	# according to the above calibration, mu_air is 0
 	

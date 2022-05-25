@@ -1,6 +1,15 @@
 import numpy as np
 from attenuate import attenuate
 
+# From https://www.gov.uk/government/publications/ionising-radiation-dose-comparisons/ionising-radiation-dose-comparisons#:~:text=In%20the%20UK%2C%20Public%20Health,the%20body%20to%20differing%20degrees.
+# Average background radiation is about 2700 microsieverts a year which converts to 0.9 counts per second
+# Since 1 uSv/hr = 0.0057 CPM
+
+_background_noise_mean = 0.9
+_scattering_noise_scaling = 1e-2
+_scattering_variance_scaling = 2e9
+_transmission_noise_scaling = 2e4
+
 
 def ct_detect(photons, coeffs, depth, mas=10000):
 
@@ -50,8 +59,13 @@ def ct_detect(photons, coeffs, depth, mas=10000):
 
     # extend source photon array so it covers all samples
     detector_photons = np.zeros([energies, samples])
+
     for e in range(energies):
-        detector_photons[e] = photons[e] # assigning to an array from a scalar assigns the same scalar to each of the elements of the array. this duplicates the photon number at each energy across multiple samples
+        mean = photons[e]
+        #source poisson noise
+        detector_photons[e] = mean # np.random.poisson(mean)
+
+    source_photons = np.sum(detector_photons, axis=0)
 
     # calculate array of residual mev x samples for each material in turn
     for m in range(materials):
@@ -61,6 +75,15 @@ def ct_detect(photons, coeffs, depth, mas=10000):
     detector_photons = np.sum(detector_photons, axis=0)
 
     # model noise
+    # transmission noise modeled by approximate normal distribution
+    detector_photons = np.random.poisson(detector_photons / _transmission_noise_scaling,
+                                        detector_photons.shape).astype(np.float) * _transmission_noise_scaling
+    background_noise = np.random.poisson(_background_noise_mean * mas,
+                                        detector_photons.shape).astype(np.float)
+    scattering_noise = _scattering_noise_scaling * _scattering_variance_scaling * np.random.poisson(source_photons / _scattering_variance_scaling,
+                                                                    source_photons.shape).astype(np.float)
+    detector_photons += scattering_noise + background_noise
+
 
     # minimum detection is one photon
     detector_photons = np.clip(detector_photons, 1, None)
