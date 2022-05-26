@@ -70,4 +70,4 @@ def normalise_to_highlight(x, mat_name):
 	
 	(c, w) = normalisation_value_list[material_name_list.index(mat_name)]
 	
-	return np.clip(128.0*(x - c)/w + 128.0, 0, 255)
+	return np.round(np.clip(128.0*(x - c)/w + 128.0, 0, 255))
