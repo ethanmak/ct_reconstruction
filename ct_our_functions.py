@@ -65,8 +65,8 @@ def normalize_to_greyscale(X):
 	return (X - np.min(X)) / (np.max(X) - np.min(X))
 
 def normalise_to_highlight(x, mat_name):
-	material_name_list = ['Soft tissue', 'Bone']
-	normalisation_value_list = [(0, 200), (1000, 300)]
+	material_name_list = ['Soft tissue', 'Bone', 'Titanium']
+	normalisation_value_list = [(0, 200), (1600, 350), (8000, 400)]
 	
 	(c, w) = normalisation_value_list[material_name_list.index(mat_name)]
 	
