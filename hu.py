@@ -2,6 +2,12 @@ import numpy as np
 from attenuate import *
 from ct_calibrate import *
 
+# in order to turn to hounsfield units, we perform a linear regression by comparing with reconstructed data
+_points = ((0, -1000), (0.06585539958470409, 1450))
+
+_m = (_points[1][1] - _points[0][1]) / (_points[1][0] - _points[0][0])
+_b = _points[0][1] - _m * _points[0][0]
+
 def hu(photons, material, reconstruction, scale, n_detectors, noise=True):
 	"""convert CT reconstruction output to Hounsfield Units
 	calibrated = hu(photons, material, reconstruction, scale, n_detectors) converts the reconstruction into Hounsfield
@@ -22,5 +28,17 @@ def hu(photons, material, reconstruction, scale, n_detectors, noise=True):
 	# using result to convert to hounsfield units
 	reconstruction = 1000.0 * (reconstruction - mu_water) / mu_water
 	
+	# clamping between -1024 and 3072
+	return np.clip(reconstruction, -1024.0, 3072.0)
+
+
+def hu_real(reconstruction, scale=None):
+	"""convert CT reconstruction output to Hounsfield Units
+	calibrated = hu(photons, material, reconstruction, scale, n_detectors) converts the reconstruction into Hounsfield
+	Units, using the material coefficients, photon energy photons and scale given."""
+
+	# using result to convert to hounsfield units
+	reconstruction = _m * reconstruction + _b
+
 	# clamping between -1024 and 3072
 	return np.clip(reconstruction, -1024.0, 3072.0)

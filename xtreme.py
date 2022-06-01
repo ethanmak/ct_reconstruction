@@ -5,12 +5,16 @@ import math
 import os
 import sys
 from ramp_filter import *
+from ct_calibrate import *
 from back_project import *
 from create_dicom import *
+from hu import *
 
+SAVE_DIR = os.path.join(os.getcwd(), 'dicoms')
+DATA_DIR = os.path.join(os.getcwd(), 'data')
 
 class Xtreme(object):
-    def __init__(self, file):
+    def __init__(self, file, savedir=SAVE_DIR, filedir=DATA_DIR):
 
         """x = Xtreme( filename ) reads the Xtreme scanner .RSQ file
         specified by filename, and initialises the class with a header
@@ -42,6 +46,10 @@ class Xtreme(object):
         'filename' - name of file"""
 
         self.okay = True
+        self.savedir = savedir
+
+        if filedir is not None:
+            file = os.path.join(filedir, file)
 
         if not os.path.isfile(file):
             self.okay = False
@@ -256,7 +264,25 @@ class Xtreme(object):
 
         return Y
 
-    def reconstruct_all(self, file, method=None, alpha=None):
+    def reconstruct(self, slice, slice_min, slice_max, alpha):
+        '''
+        Reconstruct a single slice of the fan-beam image.
+
+        :param slice: Fan-beam sinogram
+        :param slice_min: Noise floor of CT image
+        :param slice_max: Measurement of CT in air
+        :param alpha: Power of raised cosine Ram-Lak filter
+        :return: Reconstructed CT image
+        '''
+        slice = np.clip(slice - slice_min, 1, None)
+        slice = ct_calibrate_real(slice, slice_max)
+        slice = self.fan_to_parallel(slice)
+        slice = ramp_filter(slice, self.scale, alpha)
+        image = back_project(slice)
+        image = np.clip(image, a_min=0, a_max=np.max(image))
+        return image
+
+    def reconstruct_all(self, file='ct_data', method=None, alpha=None):
 
         """reconstruct_all( FILENAME, ALPHA ) creates a series of DICOM
         files for the Xtreme RSQ data. FILENAME is the base file name for
@@ -275,6 +301,9 @@ class Xtreme(object):
         if method is None:
             method = "parallel"
 
+        if not os.path.isdir(self.savedir):
+            os.makedirs(self.savedir)
+
         # set frame number and DICOM UIDs for saving to multiple frames
         z = 1
         seriesuid = pydicom.uid.generate_uid()
@@ -290,16 +319,24 @@ class Xtreme(object):
                 pass
 
             else:
-
                 # default method should reconstruct each slice separately
                 for scan in range(
                     fan + self.skip_scans, fan + self.fan_scans - self.skip_scans
                 ):
                     if scan < self.scans:
-
                         # reconstruct scan
+                        print('Reconstructing scan angle {}'.format(scan))
+                        slice, slice_min, slice_max = self.get_rsq_slice(scan)
+                        image = self.reconstruct(slice, slice_min, slice_max, alpha)
+
+                        image = hu_real(image, self.scale)
 
                         # save as dicom file
+                        create_dicom(image,
+                                     filename=file,
+                                     sp=self.scale, f=z,
+                                     study_uid=studyuid, series_uid=seriesuid, frame_uid=frameuid,
+                                     storage_directory=self.savedir)
                         z = z + 1
 
         return

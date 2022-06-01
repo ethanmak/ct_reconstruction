@@ -225,3 +225,6 @@ ethan_test.py
 
 # Ignores self-made figures
 figures/
+
+# Ignore large data files
+data/
