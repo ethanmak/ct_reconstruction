@@ -71,3 +71,6 @@ def normalise_to_highlight(x, mat_name):
 	(c, w) = normalisation_value_list[material_name_list.index(mat_name)]
 	
 	return np.round(np.clip(128.0*(x - c)/w + 128.0, 0, 255))
+
+def log_interp(x, y, point):
+	return np.power(10, scipy.interpolate.interp1d(np.log10(x), np.log10(y), kind='linear')(np.log10(point)))

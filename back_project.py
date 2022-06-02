@@ -3,7 +3,12 @@ import math
 import scipy
 from scipy import interpolate
 import sys
+import multiprocessing as mp
 
+def interpolate_and_process(x0, sino, ns, angles):
+    interpolated_func = scipy.interpolate.interp1d(np.arange(0, ns, 1), sino, kind='linear', copy=False,
+                                                   assume_sorted=True, bounds_error=False, fill_value=0, axis=0)
+    return interpolated_func(x0) * (np.pi / angles)
 
 def back_project(sinogram, skip=1):
 
@@ -78,22 +83,14 @@ def back_project_improved(sinogram, skip=1):
     # but the output coordinates need to be relative to the top left
     list_angles = np.array(range(angles))
     p = np.pi / 2 + list_angles * np.pi / angles
-    x0 = np.zeros((angles, n, n))
+    params = []
+
     for angle in range(angles):
-        x0[angle] = xi * np.cos(p[angle]) - yi * np.sin(p[angle]) + (ns / 2) - 0.5
+        params.append((xi * np.cos(p[angle]) - yi * np.sin(p[angle]) + (ns / 2) - 0.5,
+                      sinogram[angle], ns, angles))
 
-    sys.stdout.write("Reconstructing angles \n")
-    # interpolate and add this data to output
-    # remembering to multiply by dtheta as well as sum
-    interpolated_func = scipy.interpolate.interp1d(np.arange(0, ns, 1), sinogram, kind='linear', copy=False,
-                                                   assume_sorted=True, bounds_error=False, fill_value=0, axis=0)
-
-    sys.stdout.write("Done creating interpolation function \n")
-    interpolations = interpolated_func(x0)[:, :, list_angles]
-    sys.stdout.write("Done creating interpolations of size {} \n".format(interpolations.shape))
-    reconstruction = np.sum(interpolations, axis=2) * (np.pi / angles)
-    # for angle in range(angles):
-    #     reconstruction = reconstruction + interpolated_func(x0[angle])[:, angle] * (np.pi / angles)
+    with mp.Pool(processes=mp.cpu_count()) as pool:
+        reconstruction = np.sum(pool.starmap(interpolate_and_process, params), axis=0)
 
     # ensure any data outside the reconstructed circle is set to invalid
     reconstruction[np.where((xi**2 + yi**2) > (ns / 2) ** 2)] = -1

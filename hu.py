@@ -1,12 +1,14 @@
-import numpy as np
-from attenuate import *
+
 from ct_calibrate import *
+from ct_our_functions import *
 
 # in order to turn to hounsfield units, we perform a linear regression by comparing with reconstructed data
-_points = ((0, -1000), (0.06585539958470409, 1450))
+# _points = ((0, -1000), (0.6144575495418269, 1450))
+#
+# _m = (_points[1][1] - _points[0][1]) / (_points[1][0] - _points[0][0])
+# _b = _points[0][1] - _m * _points[0][0]
 
-_m = (_points[1][1] - _points[0][1]) / (_points[1][0] - _points[0][0])
-_b = _points[0][1] - _m * _points[0][0]
+_mu_w = log_interp(np.array([0.04, 0.05]), np.array([0.2683, 0.2269]), 0.75 * 0.06)
 
 def hu(photons, material, reconstruction, scale, n_detectors, noise=True):
 	"""convert CT reconstruction output to Hounsfield Units
@@ -38,7 +40,13 @@ def hu_real(reconstruction, scale=None):
 	Units, using the material coefficients, photon energy photons and scale given."""
 
 	# using result to convert to hounsfield units
-	reconstruction = _m * reconstruction + _b
+	# reconstruction = _m * reconstruction + _b
+
+	# gotten from https://physics.nist.gov/PhysRefData/XrayMassCoef/ComTab/water.html and assuming a logarithmic linear
+	# relationship between energy and attenuation coefficient
+	# Average kev gotten from https://www.researchgate.net/figure/Average-kiloelectron-voltage-keV-given-the-kilovoltage-peak-kVp-7_tbl1_262228564
+
+	reconstruction = 1000.0 * (reconstruction - _mu_w) / _mu_w
 
 	# clamping between -1024 and 3072
 	return np.clip(reconstruction, -1024.0, 3072.0)

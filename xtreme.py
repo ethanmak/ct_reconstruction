@@ -8,7 +8,7 @@ from ramp_filter import *
 from ct_calibrate import *
 from back_project import *
 from create_dicom import *
-from hu import *
+import hu
 
 SAVE_DIR = os.path.join(os.getcwd(), 'dicoms')
 DATA_DIR = os.path.join(os.getcwd(), 'data')
@@ -264,7 +264,7 @@ class Xtreme(object):
 
         return Y
 
-    def reconstruct(self, slice, slice_min, slice_max, alpha):
+    def reconstruct_parallel(self, slice, slice_min, slice_max, alpha):
         '''
         Reconstruct a single slice of the fan-beam image.
 
@@ -275,9 +275,10 @@ class Xtreme(object):
         :return: Reconstructed CT image
         '''
         slice = np.clip(slice - slice_min, 1, None)
-        slice = ct_calibrate_real(slice, slice_max)
+        slice = ct_calibrate_real(slice, np.clip(slice_max - slice_min, 1, None))
         slice = self.fan_to_parallel(slice)
-        slice = ramp_filter(slice, self.scale, alpha)
+        # ramp filter expects a scale in cm but scale is in mm, so we multiply by 0.1
+        slice = ramp_filter(slice, self.scale * 0.1, alpha)
         image = back_project(slice)
         image = np.clip(image, a_min=0, a_max=np.max(image))
         return image
@@ -327,9 +328,9 @@ class Xtreme(object):
                         # reconstruct scan
                         print('Reconstructing scan angle {}'.format(scan))
                         slice, slice_min, slice_max = self.get_rsq_slice(scan)
-                        image = self.reconstruct(slice, slice_min, slice_max, alpha)
+                        image = self.reconstruct_parallel(slice, slice_min, slice_max, alpha)
 
-                        image = hu_real(image, self.scale)
+                        image = hu.hu_real(image, self.scale)
 
                         # save as dicom file
                         create_dicom(image,
